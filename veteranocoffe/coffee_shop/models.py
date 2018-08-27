@@ -44,5 +44,3 @@ class Publication(models.Model):
     def summary(self):
         return self.body[:100] + '...'
 
-
-# Create your models here.
