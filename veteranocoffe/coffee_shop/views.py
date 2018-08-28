@@ -9,8 +9,8 @@ class HomeView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['news_list'] = reversed(News.objects.all())
-        context['publication_list'] = reversed(Publication.objects.all())
+        context['news_list'] = News.objects.all().order_by('-pub_date')[:3]
+        context['publications_list'] = Publication.objects.all().order_by('-pub_date')[:5]
         return context
 
 class ContactsView(TemplateView):
@@ -24,13 +24,16 @@ class ContactsView(TemplateView):
 class NewsListView(ListView):
     template_name = 'news.html'
     model = News
+    paginate_by = 10
+    context_object_name = 'news_list'
+    queryset = News.objects.all().order_by('-pub_date')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['all_news_list'] = chain(reversed(News.objects.all()), reversed(Publication.objects.all()))
-        context['news_list'] = News.objects.all()
-        context['publication_list'] = Publication.objects.all()
-        return context
+class PublicationsListView(ListView):
+    template_name = 'publications.html'
+    model = Publication
+    paginate_by = 10
+    context_object_name = 'publications_list'
+    queryset = Publication.objects.all().order_by('-pub_date')
   
 class NewsDetailView(DetailView):
     template_name = 'detail_news.html'
